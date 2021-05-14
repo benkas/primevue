@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div v-if="filter" class="p-multiselect-filter-container">
-                        <input type="text" v-model="filterValue" class="p-multiselect-filter p-inputtext p-component" :placeholder="filterPlaceholder" @input="onFilterChange">
+                        <input type="text" ref="filterInput" v-model="filterValue" class="p-multiselect-filter p-inputtext p-component" :placeholder="filterPlaceholder" @input="onFilterChange">
                         <span class="p-multiselect-filter-icon pi pi-search"></span>
                     </div>
                     <button class="p-multiselect-close p-link" @click="onCloseClick" type="button" v-ripple>
@@ -292,6 +292,9 @@ export default {
             this.bindOutsideClickListener();
             this.bindScrollListener();
             this.bindResizeListener();
+            if (this.filter) {
+                this.$refs.filterInput.focus();
+            }
             this.$emit('show');
         },
         onOverlayLeave() {
@@ -344,7 +347,7 @@ export default {
         bindResizeListener() {
             if (!this.resizeListener) {
                 this.resizeListener = () => {
-                    if (this.overlayVisible) {
+                    if (this.overlayVisible && !DomHandler.isAndroid()) {
                         this.hide();
                     }
                 };
